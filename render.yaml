@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: goodjob-backend
+    env: docker
+    plan: free
+    buildCommand: ./gradlew build -x test
+    startCommand: java -jar build/libs/*.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: goodjob-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: goodjob-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: goodjob-db
+          property: password
+
+databases:
+  - name: goodjob-db
+    plan: free 
