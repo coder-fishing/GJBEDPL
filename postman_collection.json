@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "your-collection-id",
+		"name": "Admin Job APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Process Job",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"APPROVED\",\n    \"adminId\": 1,\n    \"rejectionReason\": null\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/admin/jobs/{{jobId}}/process",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "admin", "jobs", "{{jobId}}", "process"]
+				}
+			}
+		},
+		{
+			"name": "Reject Job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/admin/jobs/{{jobId}}/reject?adminId=1&reason=invalid_job_description",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "admin", "jobs", "{{jobId}}", "reject"],
+					"query": [
+						{
+							"key": "adminId",
+							"value": "1"
+						},
+						{
+							"key": "reason",
+							"value": "invalid_job_description"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Pending Jobs",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost:8080/api/admin/jobs/pending",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "admin", "jobs", "pending"]
+				}
+			}
+		}
+	]
+} 

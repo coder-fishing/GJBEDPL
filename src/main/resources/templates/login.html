@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #81c784;
+        }
+        .navbar-brand {
+            color: white !important;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #81c784;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 15px;
+        }
+        .btn-custom {
+            background-color: #81c784;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 20px;
+            border: none;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #66bb6a;
+            color: white;
+        }
+        .btn-google {
+            background-color: #db4437;
+            color: white;
+        }
+        .btn-google:hover {
+            background-color: #c31810;
+            color: white;
+        }
+        .btn-facebook {
+            background-color: #4267B2;
+            color: white;
+            margin-top: 10px;
+        }
+        .btn-facebook:hover {
+            background-color: #365899;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+        .form-control {
+            border-left: none;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .divider span {
+            padding: 0 10px;
+            color: #6c757d;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">GoodJob</a>
+</nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Thông báo lỗi/thành công -->
+            <div th:if="${param.error}" class="alert alert-danger text-center">
+                Tên đăng nhập hoặc mật khẩu không đúng
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success text-center">
+                Bạn đã đăng xuất thành công
+            </div>
+
+            <!-- Form đăng nhập -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">Đăng nhập</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/api/auth/login}" method="post">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                </div>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="username" 
+                                       placeholder="Tên đăng nhập"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                                <input type="password" 
+                                       class="form-control" 
+                                       name="password" 
+                                       placeholder="Mật khẩu"
+                                       required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-custom">Đăng nhập</button>
+                    </form>
+
+                    <div class="divider">
+                        <span>HOẶC</span>
+                    </div>
+
+                    <!-- Đăng nhập bằng Google -->
+                    <a href="/oauth2/authorization/google" class="btn btn-custom btn-google">
+                        <i class="fab fa-google mr-2"></i> Đăng nhập với Google
+                    </a>
+
+                    <!-- Đăng nhập bằng Facebook -->
+                    <a href="/oauth2/authorization/facebook" class="btn btn-custom btn-facebook">
+                        <i class="fab fa-facebook-f mr-2"></i> Đăng nhập với Facebook
+                    </a>
+
+                    <!-- Link đăng ký -->
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Chưa có tài khoản? 
+                            <a href="/register" class="text-primary">Đăng ký ngay</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

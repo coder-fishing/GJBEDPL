@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #81c784;
+        }
+        .navbar-brand {
+            color: white !important;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #81c784;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 15px;
+        }
+        .btn-custom {
+            background-color: #81c784;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 20px;
+            border: none;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #66bb6a;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+        .form-control {
+            border-left: none;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">GoodJob</a>
+</nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Thông báo lỗi nếu có -->
+            <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}">
+            </div>
+
+            <!-- Form đăng ký -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">Đăng ký tài khoản</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/api/auth/register}" method="post" id="registerForm">
+                        <!-- Username -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                </div>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="username" 
+                                       placeholder="Tên đăng nhập"
+                                       required
+                                       minlength="3"
+                                       maxlength="50">
+                            </div>
+                            <div class="invalid-feedback">
+                                Tên đăng nhập phải từ 3-50 ký tự
+                            </div>
+                        </div>
+
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-id-card"></i>
+                                    </span>
+                                </div>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="fullName" 
+                                       placeholder="Họ và tên"
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                </div>
+                                <input type="email" 
+                                       class="form-control" 
+                                       name="email" 
+                                       placeholder="Email"
+                                       required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Vui lòng nhập email hợp lệ
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                                <input type="password" 
+                                       class="form-control" 
+                                       name="password" 
+                                       placeholder="Mật khẩu"
+                                       required
+                                       minlength="6">
+                            </div>
+                            <div class="password-requirements">
+                                Mật khẩu phải có ít nhất 6 ký tự
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                                <input type="password" 
+                                       class="form-control" 
+                                       name="confirmPassword" 
+                                       placeholder="Nhập lại mật khẩu"
+                                       required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Mật khẩu không khớp
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-custom">Đăng ký</button>
+                    </form>
+
+                    <!-- Link đăng nhập -->
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Đã có tài khoản? 
+                            <a href="/login" class="text-primary">Đăng nhập</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3" id="otpCard" style="display: none;">
+            <div class="card-header text-center">
+                <h5 class="mb-0">Xác thực Email</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Nhập mã OTP đã gửi tới email của bạn để xác thực tài khoản.</p>
+                <div class="form-group">
+                    <input type="text" id="otpInput" class="form-control" placeholder="Nhập mã xác thực">
+                </div>
+                <button class="btn btn-custom" id="verifyBtn">Xác thực</button>
+                <div id="verifyMessage" class="mt-2 text-center text-danger"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Submit the registration form
+        $('#registerForm').on('submit', function(e) {
+            e.preventDefault();
+
+            // Check if passwords match
+            var password = $('input[name="password"]').val();
+            var confirmPassword = $('input[name="confirmPassword"]').val();
+
+            if (password !== confirmPassword) {
+                $('input[name="confirmPassword"]').next('.invalid-feedback').show();
+                return;
+            }
+
+            // Create the data object for the form
+            var formData = {
+                username: $('input[name="username"]').val(),
+                password: password,
+                fullName: $('input[name="fullName"]').val(),
+                email: $('input[name="email"]').val()
+            };
+
+            // Send AJAX request to register
+            $.ajax({
+                url: '/api/auth/register',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.needVerify) {
+                        // Hide the registration form and show the OTP card
+                        $('#registerForm').hide();
+                        $('#otpCard').show();
+                        $('#verifyMessage').removeClass('text-success').text('');
+
+                        // Store email/token if necessary for verification
+                        localStorage.setItem('emailForVerify', response.email);
+
+                        // Handle OTP verification
+                        $('#verifyBtn').on('click', function() {
+                            const token = $('#otpInput').val().trim();
+
+                            if (!token) {
+                                $('#verifyMessage').text('Vui lòng nhập mã xác thực.');
+                                return;
+                            }
+
+                            // Send the OTP for verification
+                            $.ajax({
+                                url: '/api/auth/verify?token=' + token,
+                                type: 'GET',
+                                success: function(res) {
+                                    $('#verifyMessage')
+                                        .removeClass('text-danger')
+                                        .addClass('text-success')
+                                        .text(res);
+
+                                    // Redirect to the login page after successful verification
+                                    setTimeout(() => {
+                                        window.location.href = '/login?verified=true';
+                                    }, 1500);
+                                },
+                                error: function(err) {
+                                    const msg = err.responseJSON?.message || 'Xác thực thất bại. Vui lòng kiểm tra lại.';
+                                    $('#verifyMessage')
+                                        .removeClass('text-success')
+                                        .addClass('text-danger')
+                                        .text(msg);
+                                }
+                            });
+                        });
+                    } else {
+                        // No verification needed, redirect to login
+                        window.location.href = '/verify';
+                    }
+                },
+                error: function(xhr) {
+                    // Show error message if registration fails
+                    var error = xhr.responseJSON ? xhr.responseJSON.message : 'Đã có lỗi xảy ra';
+                    var alertHtml = '<div class="alert alert-danger text-center">' + error + '</div>';
+                    $('.card').before(alertHtml);
+                }
+            });
+        });
+
+        // Check the length of the username
+        $('input[name="username"]').on('input', function() {
+            const length = $(this).val().length;
+            if (length < 3 || length > 50) {
+                $(this).addClass('is-invalid');
+                $(this).siblings('.invalid-feedback').show();
+            } else {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.invalid-feedback').hide();
+            }
+        });
+
+        // Validate the email format
+        $('input[name="email"]').on('input', function() {
+            const email = $(this).val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                $(this).addClass('is-invalid');
+                $(this).siblings('.invalid-feedback').show();
+            } else {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.invalid-feedback').hide();
+            }
+        });
+    });
+</script>
+</body>
+</html> 
