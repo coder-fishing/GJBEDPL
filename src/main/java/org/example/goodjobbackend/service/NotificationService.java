@@ -55,10 +55,10 @@ public class NotificationService {
     }
 
     // Tạo thông báo khi có người ứng tuyển mới
-    public void notifyNewApplication(User employer, String applicantName, String jobTitle, JobApplication application) {
+    public Notification notifyNewApplication(User employer, String applicantName, String jobTitle, JobApplication application) {
         String title = "Ứng viên mới ứng tuyển";
         String content = applicantName + " đã ứng tuyển vào vị trí " + jobTitle;
-        createNotification(employer, title, content, NotificationType.NEW_APPLICATION, application);
+        return createNotification(employer, title, content, NotificationType.NEW_APPLICATION, application);
     }
 
     // Tạo thông báo khi trạng thái ứng tuyển thay đổi
@@ -66,5 +66,12 @@ public class NotificationService {
         String title = "Cập nhật trạng thái ứng tuyển";
         String content = "Đơn ứng tuyển của bạn vào vị trí " + jobTitle + " đã được " + status;
         createNotification(applicant, title, content, NotificationType.APPLICATION_STATUS, application);
+    }
+
+    // Tạo thông báo cho employer khi admin duyệt/từ chối bài đăng
+    public Notification notifyJobStatusToEmployer(User employer, String jobTitle, boolean isApproved, JobApplication application) {
+        String title = "Cập nhật trạng thái bài đăng";
+        String content = "Bài đăng \"" + jobTitle + "\" của bạn đã được " + (isApproved ? "duyệt" : "từ chối");
+        return createNotification(employer, title, content, NotificationType.JOB_STATUS, application);
     }
 } 

@@ -76,4 +76,22 @@ public class EmployerController {
     public ResponseEntity<EmployerDTO> getEmployerByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(employerService.getEmployerByUserId(userId));
     }
+
+    /**
+     * Kiểm tra xem một user có phải là employer hay không
+     * GET /api/employers/{id}/check
+     */
+    @GetMapping("/{id}/check")
+    public ResponseEntity<Boolean> checkEmployer(@PathVariable Long id) {
+        return ResponseEntity.ok(employerService.isEmployer(id));
+    }
+
+    /**
+     * Lấy thông tin của employer hiện tại
+     * GET /api/employers/current
+     */
+    @GetMapping("/current")
+    public ResponseEntity<EmployerDTO> getCurrentEmployer() {
+        return ResponseEntity.ok(employerService.getCurrentEmployer());
+    }
 }

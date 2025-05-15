@@ -14,7 +14,11 @@ public interface EmployerRepository extends JpaRepository<Employer, Long> {
     Optional<Employer> findByCompanyName(String companyName);
     boolean existsByCompanyName(String companyName);
     boolean existsByTaxCode(String taxCode);
+    boolean existsByUserId(Long userId);
 
     @Query("SELECT e FROM Employer e JOIN FETCH e.user WHERE e.user.id = :userId")
     Optional<Employer> findByUserIdWithUser(@Param("userId") Long userId);
+    
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Employer e WHERE e.user.email = :email")
+    boolean existsByEmail(@Param("email") String email);
 } 

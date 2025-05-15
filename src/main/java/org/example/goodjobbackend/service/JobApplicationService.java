@@ -4,10 +4,14 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.goodjobbackend.dto.JobApplicationDTO;
+import org.example.goodjobbackend.dto.JobApplicationRequest;
 import org.example.goodjobbackend.model.ApplicationStatus;
 import org.example.goodjobbackend.model.JobApplication;
 import org.example.goodjobbackend.model.NotificationType;
 import org.example.goodjobbackend.repository.JobApplicationRepository;
+import org.example.goodjobbackend.repository.JobRepository;
+import org.example.goodjobbackend.repository.UserRepository;
+import org.example.goodjobbackend.repository.EmployerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +25,52 @@ public class JobApplicationService {
 
     private final JobApplicationRepository jobApplicationRepository;
     private final EmailService emailService;
+    private final JobRepository jobRepository;
+    private final UserRepository userRepository;
+    private final EmployerRepository employerRepository;
     private final NotificationService notificationService;
+
+    /**
+     * Nộp đơn ứng tuyển
+     */
+    @jakarta.transaction.Transactional
+    public JobApplication apply(JobApplicationRequest request) {
+        // Kiểm tra xem đã apply chưa
+        List<JobApplication> existingApplications = jobApplicationRepository.findByJobIdAndApplicantId(
+                request.getJobId(), request.getApplicantId());
+        if (!existingApplications.isEmpty()) {
+            throw new RuntimeException("Bạn đã ứng tuyển vị trí này rồi");
+        }
+
+        // Tìm job, user và employer
+        var job = jobRepository.findById(request.getJobId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy công việc với ID: " + request.getJobId()));
+        
+        var applicant = userRepository.findById(request.getApplicantId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID: " + request.getApplicantId()));
+        
+        var employer = employerRepository.findById(job.getEmployerId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhà tuyển dụng với ID: " + job.getEmployerId()));
+
+        // Tạo đơn ứng tuyển mới
+        JobApplication application = JobApplication.builder()
+                .job(job)
+                .applicant(applicant)
+                .employer(employer)
+                .coverLetter(request.getCoverLetter())
+                .resumeUrl(request.getResumeUrl())
+                .status(ApplicationStatus.PENDING)
+                .employerViewed(false)
+                .build();
+
+        // Lưu đơn ứng tuyển
+        application = jobApplicationRepository.save(application);
+
+        // Tăng số lượng ứng tuyển của job
+        jobRepository.incrementApplyCount(request.getJobId());
+
+        return application;
+    }
 
     public List<JobApplicationDTO> getApplicationsByUserId(Long userId) {
         List<JobApplication> applications = jobApplicationRepository.findByApplicantId(userId);
@@ -70,10 +119,10 @@ public class JobApplicationService {
         // Chỉ gửi email và thông báo nếu trạng thái thực sự thay đổi và là APPROVED hoặc REJECTED
         if (oldStatus != status && (status == ApplicationStatus.APPROVED || status == ApplicationStatus.REJECTED)) {
             try {
-                // Gửi email thông báo
+                // Gửi email thông báo cho ứng viên
                 emailService.sendApplicationStatusEmail(updatedApplication);
                 
-                // Tạo thông báo trong hệ thống
+                // Tạo thông báo trong hệ thống cho ứng viên
                 String title = "Cập nhật trạng thái đơn ứng tuyển";
                 String content = String.format("Đơn ứng tuyển của bạn cho vị trí %s tại %s đã được %s",
                     application.getJob().getTitle(),
@@ -87,6 +136,15 @@ public class JobApplicationService {
                     NotificationType.APPLICATION_STATUS,
                     application
                 );
+
+                // Tạo thông báo cho employer
+                notificationService.notifyJobStatusToEmployer(
+                    application.getEmployer().getUser(),
+                    application.getJob().getTitle(),
+                    status == ApplicationStatus.APPROVED,
+                    application
+                );
+
             } catch (MessagingException e) {
                 log.error("Lỗi khi gửi email thông báo: {}", e.getMessage());
                 // Không throw exception để không ảnh hưởng đến việc cập nhật trạng thái
@@ -106,7 +164,13 @@ public class JobApplicationService {
         return convertToDTO(updatedApplication);
     }
 
+    public JobApplication getJobApplicationById(Long id) {
+        return jobApplicationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn ứng tuyển với id: " + id));
+    }
+
     private JobApplicationDTO convertToDTO(JobApplication application) {
+
         return JobApplicationDTO.builder()
                 .id(application.getId())
                 .jobId(application.getJob().getJobId())

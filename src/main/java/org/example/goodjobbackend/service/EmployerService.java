@@ -10,6 +10,7 @@ import org.example.goodjobbackend.model.User;
 import org.example.goodjobbackend.model.UserRole;
 import org.example.goodjobbackend.repository.EmployerRepository;
 import org.example.goodjobbackend.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -210,5 +211,26 @@ public class EmployerService {
                 .verified(employer.isVerified())
                 .active(employer.isActive())
                 .build();
+    }
+
+    /**
+     * Kiểm tra xem một user có phải là employer hay không
+     */
+    public boolean isEmployer(Long userId) {
+        return employerRepository.findByUserId(userId).isPresent();
+    }
+
+    /**
+     * Lấy thông tin của employer hiện tại
+     */
+    public EmployerDTO getCurrentEmployer() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
+        
+        Employer employer = employerRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin employer"));
+                
+        return EmployerDTO.fromEntity(employer);
     }
 } 

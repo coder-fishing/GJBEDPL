@@ -2,7 +2,9 @@ package org.example.goodjobbackend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.goodjobbackend.dto.JobApplicationDTO;
+import org.example.goodjobbackend.dto.JobApplicationRequest;
 import org.example.goodjobbackend.model.ApplicationStatus;
+import org.example.goodjobbackend.model.JobApplication;
 import org.example.goodjobbackend.service.JobApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,21 @@ import java.util.List;
 public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
+
+    /**
+     * API nộp đơn ứng tuyển vào công việc
+     * @param request thông tin đơn ứng tuyển
+     * @return đơn ứng tuyển sau khi đã được lưu vào hệ thống
+     */
+    @PostMapping
+    public ResponseEntity<JobApplication> apply(@RequestBody JobApplicationRequest request) {
+        try {
+            JobApplication application = jobApplicationService.apply(request);
+            return ResponseEntity.ok(application);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
     /**
      * Lấy danh sách đơn ứng tuyển theo User ID
