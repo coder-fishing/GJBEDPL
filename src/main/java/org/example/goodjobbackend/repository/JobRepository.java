@@ -113,4 +113,11 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query("SELECT j.status, COUNT(j) FROM Job j GROUP BY j.status")
     List<Object[]> countJobsByStatus();
+
+    @Query("SELECT j.title as jobTitle, COUNT(j) as count " +
+           "FROM Job j " +
+           "WHERE j.title LIKE %:keyword% " +
+           "GROUP BY j.title " +
+           "ORDER BY count DESC")
+    List<Object[]> countJobsByKeyword(@Param("keyword") String keyword);
 }

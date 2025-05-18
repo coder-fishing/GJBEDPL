@@ -1,9 +1,6 @@
 package org.example.goodjobbackend.controller;
 
-import org.example.goodjobbackend.dto.JobCountDTO;
-import org.example.goodjobbackend.dto.JobRequest;
-import org.example.goodjobbackend.dto.JobProcessRequest;
-import org.example.goodjobbackend.dto.JobDTO;
+import org.example.goodjobbackend.dto.*;
 import org.example.goodjobbackend.model.Job;
 import org.example.goodjobbackend.model.JobStatus;
 import org.example.goodjobbackend.service.JobService;
@@ -433,6 +430,13 @@ public class JobController {
         JobProcessRequest request = new JobProcessRequest();
         request.setStatus(JobStatus.DELETED);
         return ResponseEntity.ok(jobService.processJob(jobId, request));
+    }
+
+
+    @GetMapping("/search/stats")
+    public ResponseEntity<List<JobSearchStats>> getJobSearchStats(
+            @RequestParam(required = false, defaultValue = "") String keyword) {
+        return ResponseEntity.ok(jobService.getJobSearchStats(keyword));
     }
 
 }

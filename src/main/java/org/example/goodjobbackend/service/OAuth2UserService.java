@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
-public class OAuth2UserService extends DefaultOAuth2UserService {
+public class    OAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final EmployerRepository employerRepository;
 

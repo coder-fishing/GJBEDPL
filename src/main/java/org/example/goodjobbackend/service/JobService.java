@@ -2,9 +2,7 @@ package org.example.goodjobbackend.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.example.goodjobbackend.dto.JobCountDTO;
-import org.example.goodjobbackend.dto.JobRequest;
-import org.example.goodjobbackend.dto.JobProcessRequest;
+import org.example.goodjobbackend.dto.*;
 import org.example.goodjobbackend.model.*;
 import org.example.goodjobbackend.repository.JobRepository;
 import org.example.goodjobbackend.repository.UserRepository;
@@ -17,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -301,5 +300,15 @@ public class JobService {
         }
         System.out.println(results);
         return results;
+    }
+
+    public List<JobSearchStats> getJobSearchStats(String keyword) {
+        List<Object[]> results = jobRepository.countJobsByKeyword(keyword);
+        return results.stream()
+            .map(result -> new JobSearchStats(
+                (String) result[0],  // jobTitle
+                ((Number) result[1]).longValue()  // count
+            ))
+            .collect(Collectors.toList());
     }
 }
